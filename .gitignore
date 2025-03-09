@@ -1,0 +1,43 @@
+# byte-compiled / optimized / dll files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# virtual environment
+venv/
+.env/
+*.env
+*.venv
+
+# api keys and secrets
+.env.local
+.env.development
+.env.production
+*.secret
+*.pem
+config.json
+
+# logs and debugging
+logs/
+*.log
+debug.log
+
+# jupyter notebooks
+.ipynb_checkpoints/
+
+# testing and coverage
+.tox/
+.nox/
+.coverage
+htmlcov/
+pytest_cache/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+
+# other
+.DS_Store
+.vscode/
+.idea/
+*.iml

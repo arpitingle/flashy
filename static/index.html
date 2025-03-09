@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Flashcard Generator - MVP</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .input-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        input[type="url"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="number"] {
+            width: 60px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .flashcards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .flashcard {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .flashcard-question {
+            background-color: #3498db;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+        }
+        .flashcard-answer {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: none;
+        }
+        .flashcard.flipped .flashcard-answer {
+            display: block;
+        }
+        .content-info {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .content-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .content-url {
+            color: #3498db;
+            margin-bottom: 20px;
+            word-break: break-all;
+        }
+        .loading {
+            text-align: center;
+            padding: 30px;
+            font-style: italic;
+            color: #777;
+            display: none;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Flashcard Generator</h1>
+    
+    <div class="input-section">
+        <h2>Enter Content URL</h2>
+        <input type="url" id="content-url" placeholder="Paste article URL here..." required>
+        <div>
+            <label for="num-cards">Number of flashcards:</label>
+            <input type="number" id="num-cards" min="1" max="10" value="5">
+            <button id="generate-btn">Generate Flashcards</button>
+        </div>
+    </div>
+    
+    <div id="loading" class="loading">
+        Analyzing content and generating flashcards...
+    </div>
+    
+    <div id="error-message" class="error-message"></div>
+    
+    <div id="content-info" class="content-info" style="display: none;">
+        <div id="content-title" class="content-title"></div>
+        <div id="content-url-display" class="content-url"></div>
+    </div>
+    
+    <div id="flashcards-container" class="flashcards-container"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const generateBtn = document.getElementById('generate-btn');
+            const contentUrlInput = document.getElementById('content-url');
+            const numCardsInput = document.getElementById('num-cards');
+            const flashcardsContainer = document.getElementById('flashcards-container');
+            const contentTitle = document.getElementById('content-title');
+            const contentUrlDisplay = document.getElementById('content-url-display');
+            const contentInfo = document.getElementById('content-info');
+            const loadingIndicator = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            
+            generateBtn.addEventListener('click', async function() {
+                const url = contentUrlInput.value.trim();
+                const numCards = parseInt(numCardsInput.value);
+                
+                if (!url) {
+                    showError('Please enter a valid URL');
+                    return;
+                }
+                
+                // Clear previous results
+                flashcardsContainer.innerHTML = '';
+                contentInfo.style.display = 'none';
+                errorMessage.style.display = 'none';
+                loadingIndicator.style.display = 'block';
+                
+                try {
+                    // API request to generate flashcards
+                    const response = await fetch("http://localhost:5000/api/generate-flashcards", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ 
+                            url: url, 
+                            num_cards: numCards 
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    // Display content info
+                    contentTitle.textContent = data.title;
+                    contentUrlDisplay.textContent = data.url;
+                    contentInfo.style.display = 'block';
+                    
+                    // Create flashcards
+                    data.flashcards.forEach((card, index) => {
+                        const flashcardElement = document.createElement('div');
+                        flashcardElement.className = 'flashcard';
+                        
+                        const questionElement = document.createElement('div');
+                        questionElement.className = 'flashcard-question';
+                        questionElement.textContent = card.question;
+                        
+                        const answerElement = document.createElement('div');
+                        answerElement.className = 'flashcard-answer';
+                        answerElement.textContent = card.answer;
+                        
+                        flashcardElement.appendChild(questionElement);
+                        flashcardElement.appendChild(answerElement);
+                        
+                        // Add click event to flip flashcard
+                        flashcardElement.addEventListener('click', function() {
+                            this.classList.toggle('flipped');
+                        });
+                        
+                        flashcardsContainer.appendChild(flashcardElement);
+                    });
+                    
+                } catch (error) {
+                    showError(error.message || 'An error occurred while generating flashcards');
+                } finally {
+                    loadingIndicator.style.display = 'none';
+                }
+            });
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                loadingIndicator.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
