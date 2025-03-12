@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import os
 from card import process_url_to_flashcards
@@ -6,7 +6,11 @@ from card import process_url_to_flashcards
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-@app.route('/api/generate-flashcards', methods=['GET', 'POST'])
+@app.route('/')
+def serve_frontend():
+    return send_from_directory('static', 'index.html')
+
+@app.route('/api/generate-flashcards', methods=['POST'])
 def generate_flashcards():
     data = request.json
     
@@ -14,7 +18,7 @@ def generate_flashcards():
         return jsonify({"error": "URL is required"}), 400
     
     url = data['url']
-    num_cards = data.get('num_cards', 5)  # Default to 5 cards if not specified
+    num_cards = data.get('num_cards', 5)
     
     try:
         result = process_url_to_flashcards(url, num_cards)

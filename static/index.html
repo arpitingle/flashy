@@ -166,8 +166,7 @@
                 loadingIndicator.style.display = 'block';
                 
                 try {
-                    // API request to generate flashcards
-                    const response = await fetch("http://localhost:5000/api/generate-flashcards", {
+                    const response = await fetch("/api/generate-flashcards", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -177,7 +176,12 @@
                             num_cards: numCards 
                         })
                     });
-                    
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`Server error: ${response.status} ${errorText}`);
+                    }
+
                     const data = await response.json();
                     
                     if (data.error) {
@@ -205,7 +209,6 @@
                         flashcardElement.appendChild(questionElement);
                         flashcardElement.appendChild(answerElement);
                         
-                        // Add click event to flip flashcard
                         flashcardElement.addEventListener('click', function() {
                             this.classList.toggle('flipped');
                         });
