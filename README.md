@@ -1,6 +1,6 @@
 # Flashy: AI Flashcard Generator
 
-![Flashcard Demo]()  
+![Flashcard Demo](https://github.com/arpitingle/flashy/blob/main/demo.png)  
 
 A web application that automatically generates interactive flashcards from articles and YouTube videos using AI.
 
