@@ -15,8 +15,8 @@ A web application that automatically generates interactive flashcards from artic
 
 1. **Clone Repository**
 ```bash
-git clone https://github.com/yourusername/ai-flashcard-generator.git
-cd ai-flashcard-generator
+git clone https://github.com/arpitingle/flashy.git
+cd flashy
 ```
 
 2. **Install Dependencies**
