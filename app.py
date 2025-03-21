@@ -4,7 +4,7 @@ import os
 from card import process_url_to_flashcards
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)
 
 @app.route('/')
 def serve_frontend():
@@ -17,11 +17,8 @@ def generate_flashcards():
     if not data or 'url' not in data:
         return jsonify({"error": "URL is required"}), 400
     
-    url = data['url']
-    num_cards = data.get('num_cards', 5)
-    
     try:
-        result = process_url_to_flashcards(url, num_cards)
+        result = process_url_to_flashcards(data['url'], data.get('num_cards', 5))
         return jsonify(result)
     except Exception as e:
         return jsonify({"error": str(e)}), 500

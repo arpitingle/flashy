@@ -54,30 +54,66 @@
             background-color: #2980b9;
         }
         .flashcards-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .flashcard {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        .flashcard-question {
-            background-color: #3498db;
-            color: white;
-            padding: 15px;
-            font-weight: bold;
-        }
-        .flashcard-answer {
-            padding: 15px;
-            border-top: 1px solid #eee;
-            display: none;
-        }
-        .flashcard.flipped .flashcard-answer {
-            display: block;
-        }
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.flashcard {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    min-height: 200px;
+    aspect-ratio: 1/0.9; /* Slightly taller than wide */
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.flashcard:hover {
+    transform: translateY(-5px);
+}
+
+.flashcard-question {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.flashcard-answer {
+    color: #495057;
+    font-size: 1em;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    flex-grow: 1;
+    display: none;
+    align-items: center;
+    text-align: center;
+    border: 2px solid #3498db;
+}
+
+.flashcard.flipped .flashcard-question {
+    display: none;
+}
+
+.flashcard.flipped .flashcard-answer {
+    display: flex;
+}
         .content-info {
             background-color: white;
             padding: 20px;
