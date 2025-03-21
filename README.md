@@ -1,6 +1,4 @@
-# Flashy: AI Flashcard Generator
-
-![Flashcard Demo](https://github.com/arpitingle/flashy/blob/main/demo.png)  
+# Flashy: AI Flashcard Generator 
 
 A web application that automatically generates interactive flashcards from articles and YouTube videos using AI.
 
@@ -43,7 +41,9 @@ Generate new key and paste into .env
 
 ```bash
 python app.py
-``` 
+```
+
+![Flashcard Demo](https://github.com/arpitingle/flashy/blob/main/demo.png) 
 
 
 
